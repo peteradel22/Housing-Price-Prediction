@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>House Price Prediction</h2>
+    <p>Enter the following details:</p>
+
+    <form id="predictionForm">
+        <label for="AvgAreaIncome">Average Area Income:</label>
+        <input type="number" id="AvgAreaIncome" name="AvgAreaIncome" required>
+
+        <label for="AvgAreaHouseAge">Average Area House Age:</label>
+        <input type="number" id="AvgAreaHouseAge" name="AvgAreaHouseAge" required>
+
+        <label for="AvgAreaRooms">Average Area Rooms:</label>
+        <input type="number" id="AvgAreaRooms" name="AvgAreaRooms" required>
+
+        <label for="AvgAreaBedrooms">Average Area Bedrooms:</label>
+        <input type="number" id="AvgAreaBedrooms" name="AvgAreaBedrooms" required>
+
+        <label for="AreaPopulation">Area Population:</label>
+        <input type="number" id="AreaPopulation" name="AreaPopulation" required>
+
+        <button type="button" onclick="predictPrice()">Predict Price</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        function predictPrice() {
+            const form = document.getElementById('predictionForm');
+            const formData = new FormData(form);
+            const jsonData = {};
+            
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            fetch('/predict_price', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(jsonData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerHTML = `<p>Predicted Price: $${data.predicted_price.toFixed(2)}</p>`;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+
+</body>
+</html>
